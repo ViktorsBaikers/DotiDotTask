@@ -7,5 +7,5 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  get '/data', to: 'scrapes#create'
+  get "/data", to: "scrapes#create"
 end

@@ -42,6 +42,9 @@ RSpec.describe ScraperService, type: :service do
 
     context 'caching HTML by URL' do
       before do
+        # Always starts with an empty cache
+        Rails.cache.clear
+
         # Stub the real bypass endpoint for this context only
         stub_request(
           :get,

@@ -1,3 +1,7 @@
+## DEMO URL: https://dotidot.homecloud.ink
+
+---
+
 # Rails Scraper API
 
 Rails 7 API application that can fetch arbitrary CSS-selected fields (and meta tags) from any  public webpage.
@@ -15,6 +19,7 @@ maximum speed.
 - [Getting Started](#getting-started)
     - [Environment Variables](#environment-variables)
     - [Build & Run](#build--run)
+    - [CI Integration](#ci-integration)
 - [Usage](#usage)
     - [Example Request](#example-request)
 - [Running the Test Suite](#running-the-test-suite)
@@ -25,7 +30,7 @@ maximum speed.
 ## Architecture & Flow
 
 1. **Rails API**
-    - Single `/data` endpoint (JSON POST) in `ScrapesController`
+    - Single `/data` endpoint (JSON GET) in `ScrapesController`
     - Inherits from `ActionController::API` for minimal footprint
 2. **ScraperService**
     - Fetches raw HTML via an HTTP call to a Cloudflare bypass proxy
@@ -110,9 +115,24 @@ maximum speed.
   docker compose build
   docker compose up -d
 
+### CI Integration
+
+We use GitHub Actions with three jobs in `.github/workflows/ci.yml`:
+
+1. scan_ruby
+   - Runs `bin/brakeman --no-pager` for static security analysis
+2. lint
+    - Runs `bin/rubocop -f github` for style consistency
+3. test
+    - Spins up Postgres & Redis services
+    - Runs `rails db:create db:migrate RAILS_ENV=test`
+    - Runs `rspec --format documentation`
+
+Any PR or push to main branch will trigger these jobs
+
 ## Usage
 
-Send a JSON POST to /data with:
+Send a JSON GET request to /data with:
 
 - url: target page URL
 - fields:
@@ -122,10 +142,10 @@ Send a JSON POST to /data with:
 ### Example Request
 
 - `.price-box__price` does not exist on the page, so we price from `.price-box__primary-price__value`
-- Send a POST request to `localhost:3000/data` with the following JSON body:
+- Send a GET request to `localhost:3000/data` with the following JSON body (contains all fields):
 
   ```bash
-  curl -X POST localhost:3000/data \
+  curl -X GET localhost:3000/data \
     -H 'Content-Type: application/json' \
     -d '{
       "url":"https://www.alza.cz/aeg-7000-prosteam-lfr73964cc-d7635493.htm",
@@ -133,6 +153,32 @@ Send a JSON POST to /data with:
         "price":".price-box__primary-price__value",
         "rating_value":".ratingValue",
         "rating_count":".ratingCount",
+        "meta":["keywords","twitter:image"]
+      }
+    }'
+  
+- Send a GET request to `localhost:3000/data` with the following JSON body (without meta tags):
+
+  ```bash
+  curl -X GET localhost:3000/data \
+    -H 'Content-Type: application/json' \
+    -d '{
+      "url":"https://www.alza.cz/aeg-7000-prosteam-lfr73964cc-d7635493.htm",
+      "fields":{
+        "price":".price-box__primary-price__value",
+        "rating_value":".ratingValue",
+        "rating_count":".ratingCount",
+      }
+    }'
+  
+- Send a GET request to `localhost:3000/data` with the following JSON body (with meta tags only):
+
+  ```bash
+  curl -X GET localhost:3000/data \
+    -H 'Content-Type: application/json' \
+    -d '{
+      "url":"https://www.alza.cz/aeg-7000-prosteam-lfr73964cc-d7635493.htm",
+      "fields":{
         "meta":["keywords","twitter:image"]
       }
     }'
@@ -151,6 +197,25 @@ Send a JSON POST to /data with:
      "twitter:image": "https://image.alza.cz/…"
    }
   }
+  
+- A JSON response with the requested fields without meta tags:
+
+    ```json
+    {
+     "price": "18290,-",
+     "rating_value": "4,9",
+     "rating_count": "7 hodnocení"
+    }
+  
+- A JSON response with the requested meta tags only:
+
+    ```json
+    {
+     "meta": {
+       "keywords": "Parní pračka AEG…",
+       "twitter:image": "https://image.alza.cz/…"
+     }
+    }
 
 ## Running the Test Suite
 

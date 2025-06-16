@@ -1,8 +1,8 @@
 class ScraperService
-  CF_BYPASS = ENV.fetch('CF_BYPASS_URL', 'http://cf_bypass:8000/html')
+  CF_BYPASS = ENV.fetch("CF_BYPASS_URL", "http://cf_bypass:8000/html")
   CACHE_TTL = 1.hour
-  POOL_SIZE = (ENV['THREAD_POOL_SIZE'] || Concurrent.processor_count).to_i
-  MAX_RESPONSE = (ENV['MAX_RESPONSE_SIZE'] || 5 * 1024 * 1024).to_i
+  POOL_SIZE = (ENV["THREAD_POOL_SIZE"] || Concurrent.processor_count).to_i
+  MAX_RESPONSE = (ENV["MAX_RESPONSE_SIZE"] || 5 * 1024 * 1024).to_i
 
   def initialize(url)
     @url = url
@@ -61,9 +61,9 @@ class ScraperService
   end
 
   def parse_field(doc, name, sel)
-    if name.to_s == 'meta'
+    if name.to_s == "meta"
       sel.each_with_object({}) do |meta_name, memo|
-        memo[meta_name] = doc.at("meta[name='#{meta_name}']")&.[]('content')
+        memo[meta_name] = doc.at("meta[name='#{meta_name}']")&.[]("content")
       end
     else
       doc.css(sel).map(&:text).first&.strip

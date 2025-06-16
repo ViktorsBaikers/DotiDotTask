@@ -21,8 +21,8 @@ Rails.application.configure do
   # Run rails dev:cache to toggle caching.
   config.action_controller.perform_caching = true
   config.cache_store = :redis_cache_store, {
-    url: ENV.fetch('REDIS_URL', 'redis://localhost:6379/1'),
-    namespace: 'cache_dev'
+    url: ENV.fetch("REDIS_URL", "redis://localhost:6379/1"),
+    namespace: "cache_dev"
   }
   # Show full error reports
   config.consider_all_requests_local = true

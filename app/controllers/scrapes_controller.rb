@@ -1,10 +1,9 @@
 class ScrapesController < ApplicationController
-
   def create
     url = scrape_params[:url]
 
     unless valid_url?(url)
-      render json: { error: 'Invalid URL format' }, status: :bad_request
+      render json: { error: "Invalid URL format" }, status: :bad_request
       return
     end
 

@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "ruby", "~> 3.2.8"
+ruby "3.2.8"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.2.2", ">= 7.2.2.1"
@@ -22,9 +22,9 @@ gem "bootsnap", require: false
 
 group :development, :test do
   gem "capybara"
-  gem 'benchmark-ips'
-  gem 'rspec-rails'
-  gem 'webmock'
+  gem "benchmark-ips"
+  gem "rspec-rails"
+  gem "webmock"
 
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -35,5 +35,3 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 end
-
-
