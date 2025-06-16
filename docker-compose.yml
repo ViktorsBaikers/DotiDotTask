@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:16
+    container_name: db
+    hostname: db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: web
+    hostname: web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    command: bash -c "bundle exec rails db:create db:migrate && bundle exec puma -C config/puma.rb"
+    environment:
+      RAILS_ENV: ${RAILS_ENV}
+      REDIS_URL: ${REDIS_URL}
+      DATABASE_URL: ${DATABASE_URL}
+      THREAD_POOL_SIZE: ${THREAD_POOL_SIZE}
+      RAILS_MAX_THREADS: ${RAILS_MAX_THREADS}
+      MAX_RESPONSE_SIZE: ${MAX_RESPONSE_SIZE}
+      CF_BYPASS_URL: ${CF_BYPASS_URL}
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - cf_bypass
+      - db
+
+  redis:
+    image: redis:7
+    container_name: redis
+    hostname: redis
+    restart: unless-stopped
+
+  cf_bypass:
+    image: ghcr.io/sarperavci/cloudflarebypassforscraping:latest
+    container_name: cf_bypass
+    hostname: cf_bypass
+    restart: unless-stopped
+
+volumes:
+  db-data:
+
+networks:
+  default:
+    driver: bridge
