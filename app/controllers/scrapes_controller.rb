@@ -7,7 +7,7 @@ class ScrapesController < ApplicationController
       return
     end
 
-    result = ScraperService.new(url).extract(scrape_params[:fields] || {})
+    result = ScraperService.new(url).extract(scrape_params[:fields]&.to_h || {})
     render json: result
   rescue => e
     render json: { error: e.message }, status: :bad_request

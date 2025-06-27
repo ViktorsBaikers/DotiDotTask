@@ -15,19 +15,9 @@ class ScraperService
 
     document = Nokogiri::HTML(html)
 
-    result = Concurrent::Hash.new
-    pool = Concurrent::FixedThreadPool.new(POOL_SIZE)
-
-    fields.each do |name, selector_or_list|
-      pool.post do
-        result[name] = parse_field(document, name, selector_or_list)
-      end
-    end
-
-    pool.shutdown
-    pool.wait_for_termination
-
-    result
+    Parallel.map(fields, in_threads: POOL_SIZE) do |name, selector_or_list|
+      [name, parse_field(document, name, selector_or_list)]
+    end.to_h
   end
 
   private
