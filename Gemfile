@@ -9,7 +9,7 @@ gem "sqlite3", ">= 1.4"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
-gem "pg", "~> 1.5"
+gem "pg", "~> 1.6"
 gem "redis", "~> 5.4"
 gem "httparty", "~> 0.23"
 gem "concurrent-ruby", "~> 1.3"
