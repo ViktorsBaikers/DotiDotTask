@@ -78,7 +78,7 @@ GEM
     base64 (0.3.0)
     benchmark (0.4.1)
     benchmark-ips (2.14.0)
-    bigdecimal (3.2.2)
+    bigdecimal (3.3.0)
     bootsnap (1.18.6)
       msgpack (~> 1.2)
     brakeman (7.0.2)
@@ -111,7 +111,7 @@ GEM
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashdiff (1.2.0)
-    httparty (0.23.1)
+    httparty (0.23.2)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
