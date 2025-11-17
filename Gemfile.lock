@@ -79,7 +79,7 @@ GEM
     benchmark (0.4.1)
     benchmark-ips (2.14.0)
     bigdecimal (3.2.2)
-    bootsnap (1.18.6)
+    bootsnap (1.19.0)
       msgpack (~> 1.2)
     brakeman (7.0.2)
       racc
